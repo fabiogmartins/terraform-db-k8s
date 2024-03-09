@@ -1,0 +1,56 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.14.9
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Terraform Init and Apply
+      run: |
+        cd terraform
+        terraform init
+        terraform apply -auto-approve
+      id: terraform_apply
+
+    - name: Configure AWS EKS kubectl
+      run: |
+        aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name $(terraform output -raw cluster_name)
+      working-directory: terraform
+
+    - name: Configure Kubernetes Secrets
+      run: |
+        kubectl create secret generic postgres-secret \
+          --from-literal=username=$(terraform output -raw db_username) \
+          --from-literal=password=$(terraform output -raw db_password) \
+          --from-literal=database=$(terraform output -raw database_name) \
+          --from-literal=host=$(terraform output -raw rds_endpoint) \
+          --dry-run=client -o yaml | kubectl apply -f -
+      working-directory: terraform
+
+    - name: Deploy Kubernetes Configuration
+      run: |
+        kubectl apply -f kubernetes/api/1-api-deployment.yml
+        kubectl apply -f kubernetes/api/2-api-service.yml
+        kubectl apply -f kubernetes/api/3-api-hpa.yml
+        kubectl apply -f kubernetes/apppagamento/1-api-pagamento-deployment.yml
+        kubectl apply -f kubernetes/apppagamento/2-api-pagamento-service.yml
+        kubectl apply -f kubernetes/apppagamento/3-api-pagamento-hpa.yml
