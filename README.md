@@ -1,4 +1,4 @@
-# Terraform DB & Kubernetes Deployment
+# **Terraform DB & Kubernetes Deployment**
 
 Este repositório contém a infraestrutura como código (IaC) necessária para implantar um ambiente robusto na AWS utilizando Terraform e Kubernetes. Ele é projetado para provisionar um banco de dados RDS para persistência de dados e um cluster EKS para hospedar aplicações, tudo automatizado com workflows de GitHub Actions para CI/CD.
 
@@ -52,7 +52,38 @@ Com o kubectl configurado, você pode agora aplicar as configurações do Kubern
 ```bash
 kubectl apply -f kubernetes/
 ```
-### Contribuições
+
+## **Deploy Automatizado com GitHub Actions**
+
+Este repositório está configurado com GitHub Actions para automatizar o processo de deploy tanto da infraestrutura na AWS quanto das aplicações Kubernetes, sempre que novos códigos são integrados à branch `main`.
+
+### **Como Funciona**
+
+- **Infraestrutura na AWS com Terraform**: Quando alterações são detectadas na pasta `terraform/`, o GitHub Actions executa os passos definidos no workflow para aplicar as mudanças na infraestrutura AWS utilizando Terraform. Isso inclui a criação ou atualização de recursos como VPC, RDS e EKS.
+
+- **Aplicações Kubernetes**: Alterações nas pastas `kubernetes/` disparam o workflow que aplica as configurações Kubernetes no cluster EKS, atualizando deployments, services e outras definições conforme necessário.
+
+### **Workflow do CI/CD**
+
+O arquivo de workflow `.github/workflows/deploy.yml` contém todos os passos necessários para a automação do CI/CD, detalhando as ações de checkout do código, configuração das credenciais AWS, execução dos comandos Terraform e `kubectl` para deploy da infraestrutura e das aplicações.
+
+### **Segurança**
+
+As credenciais da AWS e quaisquer outras informações sensíveis são gerenciadas de forma segura através de Secrets do GitHub, assegurando que as chaves de acesso não sejam expostas e mantendo a segurança do processo de deploy.
+
+### **Executando o Deploy Manualmente**
+
+Embora o processo seja automatizado para execução ao fazer push na branch `main`, você também pode disparar o workflow manualmente através da interface do GitHub Actions, caso seja necessário aplicar as configurações sem uma alteração de código.
+
+### **Monitoramento e Logs**
+
+Após a execução do deploy, é recomendado verificar os logs do GitHub Actions para garantir que todas as etapas foram completadas com sucesso. Além disso, você pode monitorar o estado dos recursos na AWS e no Kubernetes para validar o deploy.
+
+---
+
+Ao seguir estas práticas, o repositório oferece uma solução robusta e automatizada para o deploy contínuo da sua infraestrutura e aplicações, facilitando a gestão e reduzindo a possibilidade de erros humanos.
+
+## **Contribuições**
 Sua contribuição é bem-vinda! Sinta-se à vontade para forkar o repositório, fazer suas alterações e abrir um pull request.
 
 
