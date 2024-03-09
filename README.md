@@ -1,79 +1,58 @@
-# Infraestrutura AWS com Terraform, EKS e RDS
+# Terraform DB & Kubernetes Deployment
 
-Este guia abrange a configuração de uma infraestrutura robusta na AWS usando Terraform. Ele inclui a criação de um cluster EKS para hospedar uma aplicação Kubernetes e uma instância RDS para o PostgreSQL. A automação do CI/CD é realizada através do GitHub Actions.
+Este repositório contém a infraestrutura como código (IaC) necessária para implantar um ambiente robusto na AWS utilizando Terraform e Kubernetes. Ele é projetado para provisionar um banco de dados RDS para persistência de dados e um cluster EKS para hospedar aplicações, tudo automatizado com workflows de GitHub Actions para CI/CD.
 
-## Pré-requisitos
+## **Estrutura do Repositório**
 
-- Conta AWS
-- Terraform (versão mais recente)
-- AWS CLI configurado na máquina local
-- Git e GitHub para versionamento de código e automação CI/CD
+- **`terraform/`**: Contém arquivos `.tf` para o provisionamento da infraestrutura na AWS, abrangendo recursos como VPC, subnets, RDS (Relational Database Service) e EKS (Elastic Kubernetes Service).
 
-## Configuração Inicial
+- **`kubernetes/`**: Armazena arquivos `.yml` para o deploy de aplicações via Kubernetes, incluindo definições de deployments, services, e horizontal pod autoscalers (HPAs).
 
-### 1. AWS IAM User
+- **`workflows/`**: Inclui definições de GitHub Actions para automação do processo de CI/CD, facilitando o deploy contínuo da infraestrutura e das aplicações.
 
-Crie um usuário IAM na AWS com as permissões necessárias para gerenciar os recursos que o Terraform criará. Anote a `AWS Access Key ID` e `AWS Secret Access Key`.
+## **Pré-requisitos**
 
-### 2. GitHub Secrets
+Para utilizar este repositório, você precisará ter:
 
-No repositório do GitHub:
-- Acesse "Settings" > "Secrets" > "Actions".
-- Adicione os seguintes secrets:
-  - `AWS_ACCESS_KEY_ID` - Sua AWS Access Key ID.
-  - `AWS_SECRET_ACCESS_KEY` - Sua AWS Secret Access Key.
-  - `AWS_REGION` - A região da AWS (ex. `us-east-1`).
-  - `DB_USERNAME` - Nome de usuário para a instância RDS.
-  - `DB_PASSWORD` - Senha para a instância RDS.
-  - `DATABASE_NAME` - Nome do banco de dados.
+- Uma conta na AWS com as permissões necessárias para criar os recursos especificados nos arquivos Terraform.
+- O Terraform instalado na sua máquina local para execução de planos e aplicação de mudanças na infraestrutura.
+- O AWS CLI configurado para gerenciar recursos da AWS e interagir com o serviço EKS.
+- O `kubectl` configurado para comunicação com o cluster Kubernetes.
+- Docker, caso deseje construir e gerenciar imagens de contêiner das suas aplicações.
 
-## Estrutura do Projeto
+## **Como Usar**
 
-Organize seu projeto com a seguinte estrutura:
+### Configurando AWS Credentials
 
-/
-├── .github/
-│ └── workflows/
-│ └── deploy.yml
-├── terraform/
-│ ├── eks-cluster.tf
-│ ├── rds.tf
-│ ├── vpc.tf
-│ ├── outputs.tf
-│ ├── provider.tf
-│ └── variables.tf
-└── README.md
+Antes de iniciar, configure suas credenciais da AWS. Isso pode ser feito através das variáveis de ambiente `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY`, garantindo que o Terraform possa acessar e criar os recursos na AWS.
 
+### Inicialização e Aplicação do Terraform
 
-## Instruções de Configuração e Implantação
+Navegue até a pasta `terraform/` e inicialize o Terraform:
 
-### Terraform
+```bash
+cd terraform
+terraform init
+```
 
-- **provider.tf:** Configura o provedor AWS e especifica a região.
-- **variables.tf:** Define as variáveis necessárias para a configuração.
-- **vpc.tf:** Define a VPC.
-- **eks-cluster.tf:** Configura o cluster EKS.
-- **rds.tf:** Define a instância RDS para PostgreSQL.
+Em seguida, aplique a configuração para provisionar a infraestrutura:
+```bash
+terraform apply
+```
 
-### GitHub Actions (`.github/workflows/deploy.yml`)
+### Configuração do kubectl com EKS
+Após o provisionamento do cluster EKS, atualize o arquivo de configuração do kubectl para se conectar ao seu cluster:
+```bash
+aws eks --region <sua-regiao> update-kubeconfig --name <nome-do-cluster-eks>
+```
+Substitua <sua-regiao> e <nome-do-cluster-eks> pelos valores apropriados.
 
-Automatiza a implantação utilizando Terraform no push para o branch `main`.
-
-## Execução
-
-Para aplicar a infraestrutura:
-
-1. **Terraform Init:** Dentro da pasta `terraform`, execute `terraform init`.
-2. **Terraform Apply:** Execute `terraform apply` para criar os recursos na AWS.
-
-O GitHub Actions irá automatizar a implantação mediante commits no branch `main`.
-
-## Verificação
-
-Verifique no console da AWS se os recursos foram criados conforme esperado e estão operacionais.
-
-## Segurança
-
-Mantenha todas as informações sensíveis como secrets e nunca as exponha ou inclua diretamente em seus arquivos de configuração ou código.
+### Deploy das Aplicações com Kubernetes
+Com o kubectl configurado, você pode agora aplicar as configurações do Kubernetes para deploy das suas aplicações:
+```bash
+kubectl apply -f kubernetes/
+```
+### Contribuições
+Sua contribuição é bem-vinda! Sinta-se à vontade para forkar o repositório, fazer suas alterações e abrir um pull request.
 
 
