@@ -13,6 +13,7 @@ resource "aws_db_instance" "postgres" {
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   deletion_protection     = false # Consider setting to true for production environments
   backup_retention_period = 7     # Consider increasing for production environments
+  db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
 }
 
 resource "aws_security_group" "rds_sg" {
@@ -36,6 +37,15 @@ resource "aws_security_group" "rds_sg" {
 
   tags = {
     Name = "rds-sg"
+  }
+}
+
+resource "aws_db_subnet_group" "my_db_subnet_group" {
+  name       = "my-db-subnet-group"
+  subnet_ids = [module.vpc.private_subnets]
+
+  tags = {
+    Name = "MyDBSubnetGroup"
   }
 }
 
