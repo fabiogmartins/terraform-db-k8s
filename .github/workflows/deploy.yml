@@ -30,6 +30,8 @@ jobs:
           cd terraform
           terraform init
           terraform apply -auto-approve
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}  
         id: terraform_apply
 
       - name: Execute SQL Script on RDS
