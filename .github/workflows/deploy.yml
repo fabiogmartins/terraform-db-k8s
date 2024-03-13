@@ -28,7 +28,7 @@ jobs:
       - name: Terraform Init and Apply
         run: |
           cd terraform
-          terraform init
+          terraform init -upgrade
           terraform apply -auto-approve\
             -var="aws_region=${{ secrets.AWS_REGION }}" \
             -var="database_name=${{ secrets.DATABASE_NAME }}" \
