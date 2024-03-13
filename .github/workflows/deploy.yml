@@ -32,6 +32,9 @@ jobs:
           terraform apply -auto-approve
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}  
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
         id: terraform_apply
 
       - name: Execute SQL Script on RDS
