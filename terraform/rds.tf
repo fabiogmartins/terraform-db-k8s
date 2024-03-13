@@ -42,7 +42,7 @@ resource "aws_security_group" "rds_sg" {
 
 resource "aws_db_subnet_group" "my_db_subnet_group" {
   name       = "my-db-subnet-group"
-  subnet_ids = [module.vpc.private_subnets]
+  subnet_ids = module.vpc.private_subnets
 
   tags = {
     Name = "MyDBSubnetGroup"
