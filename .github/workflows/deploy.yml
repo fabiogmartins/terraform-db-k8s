@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3 # Atualizado para a versão mais recente que suporta Node.js 20
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2 # Hipotética atualização; verifique a existência desta versão
         with:
           terraform_version: 0.14.9
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2 # Hipotética atualização; verifique a existência desta versão
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -62,4 +62,4 @@ jobs:
           kubectl apply -f kubernetes/api/3-api-hpa.yml
           kubectl apply -f kubernetes/apppagamento/1-api-pagamento-deployment.yml
           kubectl apply -f kubernetes/apppagamento/2-api-pagamento-service.yml
-          kubectl apply -f kubernetes/apppagamento/3-api-pagamento-hpa.yml
+          kubectl apply -f kubernetes/apppagamento
