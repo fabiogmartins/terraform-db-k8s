@@ -30,4 +30,8 @@ jobs:
       - name: Terraform Destroy
         run: |
           cd terraform
-          terraform destroy -auto-approve
+          terraform destroy -auto-approve\
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="database_name=${{ secrets.DATABASE_NAME }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="db_username=${{ secrets.DB_USERNAME }}"
