@@ -1,6 +1,15 @@
+resource "aws_db_subnet_group" "my_db_subnet_group" {
+  name       = "my-dbsubnet-group"
+  subnet_ids = module.vpc.private_subnets
+
+  tags = {
+    Name = "MyDBSubnetGroup"
+  }
+}
+
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
-  engine_version          = "16.0"
+  engine_version          = "13.3"
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
   max_allocated_storage   = 100
@@ -9,11 +18,15 @@ resource "aws_db_instance" "postgres" {
   username                = var.db_username
   password                = var.db_password
   name                    = var.database_name
-  skip_final_snapshot     = true
+  db_subnet_group_name    = aws_db_subnet_group.my_db_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
-  deletion_protection     = false # Consider setting to true for production environments
-  backup_retention_period = 7     # Consider increasing for production environments
-  db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
+  skip_final_snapshot     = true
+  deletion_protection     = false
+  backup_retention_period = 7
+
+  tags = {
+    "Name" = "my-postgres-db"
+  }
 }
 
 resource "aws_security_group" "rds_sg" {
@@ -39,13 +52,3 @@ resource "aws_security_group" "rds_sg" {
     Name = "rds-sg"
   }
 }
-
-resource "aws_db_subnet_group" "my_db_subnet_group" {
-  name       = "my-db-subnet-group"
-  subnet_ids = module.vpc.private_subnets
-
-  tags = {
-    Name = "MyDBSubnetGroup"
-  }
-}
-
