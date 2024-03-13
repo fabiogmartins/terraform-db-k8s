@@ -1,12 +1,11 @@
-# resource "aws_db_subnet_group" "my_db_subnet_group" {
-#   name       = "my-dbsubnet-group"
-#   subnet_ids = module.vpc.private_subnets
+resource "aws_db_subnet_group" "my_db_subnet_group" {
+  name       = "my-dbsubnet-group"
+  subnet_ids = module.vpc.private_subnets
 
-#   tags = {
-#     Name = "MyDBSubnetGroup"
-#   }
-# }
-
+  tags = {
+    Name = "MyDBSubnetGroup"
+  }
+}
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = "13.8"
@@ -18,7 +17,7 @@ resource "aws_db_instance" "postgres" {
   username                = var.db_username
   password                = var.db_password
   name                    = var.database_name
-  db_subnet_group_name    = "my-dbsubnet-group"
+  db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   skip_final_snapshot     = true
   deletion_protection     = false
