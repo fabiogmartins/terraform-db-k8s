@@ -12,6 +12,7 @@ module "eks" {
       instance_type = "t3.micro"
       asg_max_size  = 1
     }
+  ]
 
   node_groups = {
     ng1 = {
