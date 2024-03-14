@@ -1,11 +1,16 @@
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  version         = "17.24.0"
+  version         = "20.8.2"
   cluster_name    = "eks-cluster"
   cluster_version = "1.25"
   subnets         = module.vpc.private_subnets
 
   vpc_id = module.vpc.vpc_id
+
+  eks_managed_node_group_defaults = {
+    instance_type = "t3.micro"
+  }
+
 
   worker_groups = [
     {
@@ -13,14 +18,5 @@ module "eks" {
       asg_max_size  = 1
     }
   ]
-
-  node_groups = {
-    ng1 = {
-      desired_capacity = 2
-      max_capacity     = 2
-      min_capacity     = 1
-
-      instance_type = "t3.micro"
-    }
-  }
+  
 }
