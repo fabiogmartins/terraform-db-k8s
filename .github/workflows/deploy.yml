@@ -44,11 +44,14 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           RDS_ENDPOINT: ${{ steps.terraform_apply.outputs.rds_endpoint }}
-
+      
       - name: Configure AWS EKS kubectl
         run: |
           aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name $(terraform output -raw cluster_name)
-        working-directory: terraform
+      
+      - name: List EKS Nodes
+        run: |
+          kubectl get nodes
 
       - name: Configure Kubernetes Secrets
         run: |
