@@ -13,5 +13,14 @@ module "eks" {
       asg_max_size  = 1
     }
   ]
-  
+
+  node_groups = {
+    ng1 = {
+      desired_capacity = 1
+      max_capacity     = 1
+      min_capacity     = 1
+
+      instance_types   = ["t3.micro"]
+    }
+  }
 }
