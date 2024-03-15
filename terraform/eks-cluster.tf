@@ -11,7 +11,7 @@ module "eks" {
     {
       instance_type = "t3.micro"
       asg_max_size  = 1
-      disk_size     = 1
+      disk_size     = 5
     }
   ]
 
@@ -22,7 +22,7 @@ module "eks" {
       min_capacity     = 1
 
       instance_types   = ["t3.micro"]
-      disk_size        = 1  
+      disk_size        = 5
     }
   }
 }
