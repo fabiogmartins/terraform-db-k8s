@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws" # O provedor da AWS
       version = "~> 3.72.0"       # Especifica a versão do provedor da AWS. Ajuste conforme necessário.
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 1.11.1" # Certifique-se de usar uma versão compatível
+    }
   }
 }
 
@@ -14,9 +18,7 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config" # Ou o caminho para o seu kubeconfig específico do EKS
   host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
 }

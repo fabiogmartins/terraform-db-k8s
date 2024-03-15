@@ -4,8 +4,7 @@ module "eks" {
   cluster_name    = "eks-cluster"
   cluster_version = "1.26"
   subnets         = module.vpc.private_subnets
-
-  vpc_id = module.vpc.vpc_id
+  vpc_id          = module.vpc.vpc_id
 
   worker_groups = [
     {
@@ -20,7 +19,6 @@ module "eks" {
       desired_capacity = 1
       max_capacity     = 1
       min_capacity     = 1
-
       instance_types   = ["t3.micro"]
       disk_size        = 20
     }
