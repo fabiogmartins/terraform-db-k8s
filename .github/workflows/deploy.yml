@@ -53,7 +53,7 @@ jobs:
         
       - name: Execute SQL Script on RDS
         run: |
-          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.DB_INSTANCE_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
+          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.DB_INSTANCE_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./kubernetes/db/init-sql-script.sql
       
       - name: Configure AWS EKS kubectl
         run: |
