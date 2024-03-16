@@ -17,7 +17,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 0.14.9
-          terraform_wrapper: true
+          terraform_wrapper: false
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -38,8 +38,17 @@ jobs:
             -var="db_username=${{ secrets.DB_USERNAME }}"
           echo "DB_INSTANCE_ENDPOINT=$(terraform output -raw db_instance_endpoint)" >> $GITHUB_ENV
         
+      - name: Print Terraform Outputs
+        run: |
+          cd terraform
+          terraform output
+      
       - name: Debug DB_INSTANCE_ENDPOINT
         run: echo "DB = ${{ env.DB_INSTANCE_ENDPOINT }}"
+      - name: Debug DB_INSTANCE_ENDPOINT2
+        run: echo "DB2 = ${{ steps.terraform_apply.outputs.db_instance_endpoint }}"        
+
+        
         
       - name: Execute SQL Script on RDS
         run: |
