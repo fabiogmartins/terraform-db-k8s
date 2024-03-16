@@ -59,7 +59,7 @@ jobs:
             --from-literal=username=$(terraform output -raw db_username) \
             --from-literal=password=$(terraform output -raw db_password) \
             --from-literal=database=$(terraform output -raw database_name) \
-            --from-literal=host=$(terraform output -raw rds_endpoint) \
+            --from-literal=host=$(terraform output -raw db_instance_endpoint) \
             --dry-run=client -o yaml | kubectl apply -f -
         working-directory: terraform
 
