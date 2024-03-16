@@ -1,8 +1,11 @@
-resource "aws_default_vpc" "default" {
+resource "aws_db_subnet_group" "my_db_subnet_group" {
+  name       = "my-dbsubnet-group"
+  subnet_ids = module.vpc.public_subnets
+
+
   tags = {
-    Name = "Default VPC"
+    Name = "MyDBSubnetGroup"
   }
-}
 
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
@@ -20,10 +23,12 @@ resource "aws_db_instance" "postgres" {
   deletion_protection     = false
   backup_retention_period = 7
   publicly_accessible    = true
+  db_subnet_group_name    = aws_db_subnet_group.my_db_subnet_group.name
 
   tags = {
     "Name" = "my-postgres-db"
   }
+  depends_on = [aws_db_subnet_group.my_db_subnet_group]
 }
 
 resource "aws_security_group" "rds_sg" {
