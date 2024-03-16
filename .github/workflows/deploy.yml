@@ -38,12 +38,12 @@ jobs:
 
       - name: Execute SQL Script on RDS
         run: |
-          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.RDS_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
+          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.DB_INSTANCE_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          RDS_ENDPOINT: ${{ steps.terraform_apply.outputs.rds_endpoint }}
+          DB_INSTANCE_ENDPOINT: ${{ steps.terraform_apply.outputs.db_instance_endpoint }}
       
       - name: Configure AWS EKS kubectl
         run: |
