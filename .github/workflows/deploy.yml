@@ -36,7 +36,8 @@ jobs:
             -var="database_name=${{ secrets.DATABASE_NAME }}" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="db_username=${{ secrets.DB_USERNAME }}"
-          echo "DB_INSTANCE_ENDPOINT=$(terraform output -raw db_instance_endpoint)" >> $GITHUB_ENV
+            DB_INSTANCE_ENDPOINT=$(terraform output -raw db_instance_endpoint | cut -d':' -f1)
+            echo "DB_INSTANCE_ENDPOINT=$DB_INSTANCE_ENDPOINT" >> $GITHUB_ENV
         
       - name: Print Terraform Outputs
         run: |
