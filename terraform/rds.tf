@@ -6,6 +6,7 @@ resource "aws_db_subnet_group" "my_db_subnet_group" {
   tags = {
     Name = "MyDBSubnetGroup"
   }
+}
 
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
