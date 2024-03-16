@@ -38,10 +38,12 @@ jobs:
             -var="db_username=${{ secrets.DB_USERNAME }}"
             DB_INSTANCE_ENDPOINT=$(terraform output -raw db_instance_endpoint | cut -d':' -f1)
             echo "DB_INSTANCE_ENDPOINT=$DB_INSTANCE_ENDPOINT" >> $GITHUB_ENV
+            CLUSTER_NAME=$(terraform output -raw cluster_name)
+            echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
         
       - name: Configure AWS EKS kubectl
         run: |
-          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name $(terraform output -raw cluster_name)
+          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ env.CLUSTER_NAME }}
       
       - name: List EKS Nodes
         run: |
@@ -50,10 +52,10 @@ jobs:
       - name: Configure Kubernetes Secrets
         run: |
           kubectl create secret generic postgres-secret \
-            --from-literal=username=$(terraform output -raw db_username) \
-            --from-literal=password=$(terraform output -raw db_password) \
-            --from-literal=database=$(terraform output -raw database_name) \
-            --from-literal=host=$(terraform output -raw db_instance_endpoint) \
+            --from-literal=username=${{ secrets.DB_USERNAME }} \
+            --from-literal=password=${{ secrets.DB_PASSWORD }} \
+            --from-literal=database=${{ secrets.DATABASE_NAME }} \
+            --from-literal=host=${{ env.DB_INSTANCE_ENDPOINT }} \
             --dry-run=client -o yaml | kubectl apply -f -
         working-directory: terraform
 
