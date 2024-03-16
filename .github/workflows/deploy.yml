@@ -17,6 +17,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 0.14.9
+          terraform_wrapper: true
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -26,6 +27,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Init and Apply
+        id: terraform_apply
         run: |
           cd terraform
           terraform init -upgrade
@@ -34,7 +36,7 @@ jobs:
             -var="database_name=${{ secrets.DATABASE_NAME }}" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="db_username=${{ secrets.DB_USERNAME }}"
-        id: terraform_apply
+          echo "DB_INSTANCE_ENDPOINT=$(terraform output -raw db_instance_endpoint)"
         
       - name: Debug DB_INSTANCE_ENDPOINT
         run: echo "DB = ${{ env.DB_INSTANCE_ENDPOINT }}"
