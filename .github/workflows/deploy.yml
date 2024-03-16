@@ -41,9 +41,6 @@ jobs:
       - name: Debug DB_INSTANCE_ENDPOINT
         run: echo "DB = ${{ env.DB_INSTANCE_ENDPOINT }}"
         
-      - name: Debug DB_INSTANCE_ENDPOINT2
-        run: echo "DB = ${{ terraform output -raw db_instance_endpoint }}"        
-        
       - name: Execute SQL Script on RDS
         run: |
           PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.DB_INSTANCE_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
