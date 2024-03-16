@@ -38,7 +38,7 @@ jobs:
 
       - name: Execute SQL Script on RDS
         run: |
-          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ secrets.RDS_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
+          PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql -h ${{ env.RDS_ENDPOINT }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DATABASE_NAME }} -a -f ./db/init-sql-script.sql
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
